@@ -1,0 +1,1 @@
+/* This file contains the class method implementations for QuoteTree */
