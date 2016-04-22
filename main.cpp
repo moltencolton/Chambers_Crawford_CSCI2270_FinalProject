@@ -7,6 +7,7 @@ http://www.cplusplus.com/forum/unices/45878/
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <sstream>
 #include <curl/curl.h>
 
 using namespace std;
@@ -16,6 +17,10 @@ string data;
 size_t writeCallback(char*, size_t, size_t, void*);
 void makeCurlRequest(char[]);
 bool pageFound(string);
+string trimDoc(string, string, string);
+void parseQuotes(string);
+void traverseDoc(string);
+string cleanQuote(string);
 
 int main(int argc, char const *argv[]) {
 
@@ -30,6 +35,8 @@ int main(int argc, char const *argv[]) {
 	strcat(URL, argv[2]);
 
 	makeCurlRequest(URL);
+	parseQuotes(data);
+	cout << "end" << endl;
 
 	return 0;
 }
@@ -69,10 +76,74 @@ bool pageFound(string document) {
 string trimDoc(string toTrim, string start, string finish) {
 	// Function to trim document string to save time
 	// Returns string found between start and finish
-	
+	int startIndex = toTrim.find(start);
+	toTrim = toTrim.substr(startIndex+start.length());
+	int finishIndex = toTrim.find(finish);
+
+	return toTrim.substr(0, finishIndex);
 }
 
 void parseQuotes(string document) {
 	// Function to parse quotes and add them to the QuoteTree
-	string trimmedDoc = trimDoc(document);
+	if (!pageFound(document)) {
+		cout << "This person is not on Wikiquote, please try another" << endl;
+
+	}
+	else {
+		string startHTML = "<h2><span class=\"mw-headline\" id=\"Quotes\">Quotes</span>";
+		string endHTML = "<h2>";
+		string trimmedDoc = trimDoc(document, startHTML, endHTML);
+		traverseDoc(trimmedDoc);
+	}
+}
+
+void traverseDoc(string document) {
+	// Function to traverse document to find quotes
+	int index = 0;
+	int start = 0;
+	int end = 0;
+	while (index < document.length()) {
+		start = document.find("<ul>\n<li>", index);
+		end = document.find("<ul>\n<li>", start+1);
+
+		if (start != -1 && end != -1) {
+			string quote = document.substr(start+8, end-start-8);
+			quote = cleanQuote(quote);
+			// Add the quote here
+
+			int nestedUl = document.find("</ul>\n</li>\n</ul>", end);
+			if (nestedUl != -1) {
+				index = nestedUl + 11;
+			}
+			else {
+				index = document.length();
+			}
+		}
+		else {
+			index = document.length();
+
+		}
+	}
+}
+
+string cleanQuote(string toClean) {
+	// Function to strip HTML tags from quote
+	stringstream ss;
+	bool reading = true;
+	for (int i = 0; i < toClean.length(); i++) {
+		if (toClean[i] == '<') {
+			reading = false;
+		}
+		else if (toClean[i] == '>') {
+			reading = true;
+		}
+		else {
+			if (reading) {
+				ss << toClean[i];
+			}
+		}
+	}
+	string cleanedQuote;
+	cleanedQuote = ss.str();
+	return cleanedQuote;
 }
