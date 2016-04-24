@@ -75,9 +75,9 @@ void QuoteTree::findQuote(string quote, string author)
         else
         {
             if(node->author == author)
-                cout<<"Quote is real;"<<endl;
+                cout<<"Quote is real."<<endl;
             else
-                cout<<"Quote is real but the real author is "<<node->author<<endl;
+                cout<<"Quote is real but the real author is "<<node->author<<"."<<endl;
             found = true;
         }
     }
