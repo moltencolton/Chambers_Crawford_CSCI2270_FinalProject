@@ -188,3 +188,22 @@ std::string QuoteTree::cleanQuote(std::string toClean) {
 	cleanedQuote = ss.str();
 	return cleanedQuote;
 }
+
+void QuoteTree::printQuotes() 
+{
+	printQuote(root);
+}
+
+void QuoteTree::printQuote(QuoteNode *node) 
+{
+	if (node->left != NULL) 
+	{
+		printQuote(node->left);
+	}
+	std::cout<< "********************************************************************************";
+	std::cout << std::endl << node->quote << std::endl;
+	if (node->right != NULL) 
+	{
+		printQuote(node->right);
+	}
+}

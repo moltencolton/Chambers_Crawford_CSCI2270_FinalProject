@@ -21,6 +21,7 @@ int main() {
 	
 	quoteTree.updateData("Albert", "Einstein");
 	quoteTree.parseQuotes();
+	quoteTree.printQuotes();
 	
 
 	return 0;
