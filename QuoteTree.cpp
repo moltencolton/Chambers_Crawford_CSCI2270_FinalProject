@@ -10,71 +10,72 @@ std::string curlData;
 
 QuoteTree::QuoteTree()
 {
-    root = NULL;
+	root = NULL;
 }
 
 QuoteTree::~QuoteTree()
 {
-    DeleteAll(root);
+	DeleteAll(root);
 }
 int QuoteTree::countQuoteNodes()
 {
-    return quoteCount;
+	return quoteCount;
 }
 void QuoteTree::addQuoteNode(std::string quote)
 {
-    quoteCount++;
-    QuoteNode *tmp = new QuoteNode;
-    tmp = root;
-    QuoteNode *node = new QuoteNode;
-    node -> quote = quote;
-    node -> right = NULL;
-    node -> left = NULL;
-    node -> parent = NULL;
-    QuoteNode *parent = new QuoteNode;
-    if(tmp == NULL){
-        root = node;
-        quoteCount=1;
-    }
-    else{
-    while(tmp!=NULL)
-    {
-        parent = tmp;
-        std::string quote1;
-        std::string quote2;
-        quote1 = node -> quote;
-        quote2 = tmp -> quote;
-        if(quote1.compare(quote2) < 0)
-        {
-            tmp = tmp->left;
-        }
-        else
-            tmp = tmp->right;
-    }
-    if(parent == NULL)
-    {
-        root = NULL;
-    }
-    else if(node -> quote.compare(parent-> quote) < 0)
-    {
-        parent -> left = node;
-        node -> parent = parent;
-    }
-    else
-    {
-        parent -> right = node;
-        node -> parent = parent;
-    }
-    }
+	quoteCount++;
+	QuoteNode *tmp = new QuoteNode;
+	tmp = root;
+	QuoteNode *node = new QuoteNode;
+	node -> quote = quote;
+	node -> right = NULL;
+	node -> left = NULL;
+	node -> parent = NULL;
+	QuoteNode *parent = new QuoteNode;
+	if(tmp == NULL){
+		root = node;
+		quoteCount=1;
+	}
+	else{
+		while(tmp!=NULL)
+		{
+			parent = tmp;
+			std::string quote1;
+			std::string quote2;
+			quote1 = node -> quote;
+			quote2 = tmp -> quote;
+			if(quote1.compare(quote2) < 0)
+			{
+				tmp = tmp->left;
+			}
+			else
+				tmp = tmp->right;
+		}
+		if(parent == NULL)
+		{
+			root = NULL;
+		}
+		else if(node -> quote.compare(parent-> quote) < 0)
+		{
+			parent -> left = node;
+			node -> parent = parent;
+		}
+		else
+		{
+			parent -> right = node;
+			node -> parent = parent;
+		}
+	}
 }
 
 void QuoteTree::updateData(std::string first, std::string last) 
 {
 	std::string URL = "https://en.wikiquote.org/wiki/";
 	URL += first + "_" + last;
+
 	makeCurlRequest(URL);
 	if (pageFound(curlData)) {
-		rawData = curlData;
+		parseQuotes(curlData);
 	}
 	else {
 		std::cout << "This person is not on Wikiquote, please try another" << std::endl;
@@ -82,33 +83,33 @@ void QuoteTree::updateData(std::string first, std::string last)
 }
 void QuoteTree::findQuote(std::string quote)
 {
-    bool found = false;
-    QuoteNode *node = root;
-    while(node!=NULL && !found)
-    {
-        if(node->quote.compare(quote)>0)
-            node = node -> left;
-        else if(node->quote.compare(quote)<0)
-            node = node -> right;
-        else
-        {
-            if(node->quote == quote) 
-            {
-                std::cout<<"Quote is real."<<std::endl;
-            	found = true;
-            }
-        }
-    }
-    if(!found)
-        std::cout << "Quote not found." << std::endl;
+	bool found = false;
+	QuoteNode *node = root;
+	while(node!=NULL && !found)
+	{
+		if(node->quote.compare(quote)>0)
+			node = node -> left;
+		else if(node->quote.compare(quote)<0)
+			node = node -> right;
+		else
+		{
+			if(node->quote == quote) 
+			{
+				std::cout<<"Quote is real."<<std::endl;
+				found = true;
+			}
+		}
+	}
+	if(!found)
+		std::cout << "Quote not found." << std::endl;
 }
 void QuoteTree::DeleteAll(QuoteNode* node)
 {
-    if(node -> left!= NULL)
-        DeleteAll(node->left);
-    if(node->right!=NULL)
-        DeleteAll(node->right);
-    delete node;
+	if(node -> left!= NULL)
+		DeleteAll(node->left);
+	if(node->right!=NULL)
+		DeleteAll(node->right);
+	delete node;
 }
 
 bool QuoteTree::pageFound(std::string document) {
@@ -130,11 +131,11 @@ std::string QuoteTree::trimDoc(std::string toTrim, std::string start, std::strin
 	return toTrim.substr(0, finishIndex);
 }
 
-void QuoteTree::parseQuotes() {
+void QuoteTree::parseQuotes(std::string document) {
 	// Function to parse quotes and add them to the QuoteTree
 	std::string startHTML = "<h2><span class=\"mw-headline\" id=\"Quotes\">Quotes</span>";
 	std::string endHTML = "<h2>";
-	std::string trimmedDoc = trimDoc(rawData, startHTML, endHTML);
+	std::string trimmedDoc = trimDoc(document, startHTML, endHTML);
 	traverseDoc(trimmedDoc);
 }
 
@@ -206,4 +207,9 @@ void QuoteTree::printQuote(QuoteNode *node)
 	{
 		printQuote(node->right);
 	}
+}
+
+void QuoteTree::getRandomQuote() 
+{
+
 }

@@ -31,9 +31,9 @@ class QuoteTree
         void updateData(std::string first, std::string last);
         void addQuoteNode(std::string quote);
         void findQuote(std::string quote);
-        void parseQuotes();
+        void parseQuotes(std::string document);
         void printQuotes();
-        std::string rawData;
+        void getRandomQuote();
 
     private:
         void DeleteAll(QuoteNode * node); //use this for the post-order traversal deletion of the tree

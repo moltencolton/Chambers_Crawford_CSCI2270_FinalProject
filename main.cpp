@@ -15,14 +15,19 @@ http://www.cplusplus.com/forum/unices/45878/
 
 using namespace std;
 
-int main() {
-
+int main() 
+{
 	QuoteTree quoteTree;
 	
-	quoteTree.updateData("Albert", "Einstein");
-	quoteTree.parseQuotes();
-	quoteTree.printQuotes();
-	
+	bool quit = false;
+	string userInput;
+
+	while (quit != true)
+	{
+		printMenu();
+		getline(cin, userInput);
+		quit = handleUserInput(userInput, quoteTree);
+	}
 
 	return 0;
 }
