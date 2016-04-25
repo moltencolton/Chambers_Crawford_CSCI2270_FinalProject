@@ -27,7 +27,7 @@ class QuoteTree
     public:
         QuoteTree();
         ~QuoteTree();
-        int countQuoteNodes();
+        void countQuoteNodes();
         void updateData(std::string first, std::string last);
         void addQuoteNode(std::string quote);
         void findQuote(std::string quote);

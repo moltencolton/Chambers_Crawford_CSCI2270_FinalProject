@@ -6,20 +6,24 @@
 
 #include "QuoteTree.h"
 #include "Utilities.h"
-std::string curlData;
+std::string curlData = "";
 
 QuoteTree::QuoteTree()
 {
 	root = NULL;
+	quoteCount = 0;
 }
 
 QuoteTree::~QuoteTree()
 {
-	DeleteAll(root);
+	if (root != NULL) {
+		DeleteAll(root);
+	}
+	
 }
-int QuoteTree::countQuoteNodes()
+void QuoteTree::countQuoteNodes()
 {
-	return quoteCount;
+	std::cout << "Number of Quotes by Author: " << quoteCount << std::endl;
 }
 void QuoteTree::addQuoteNode(std::string quote)
 {
@@ -34,7 +38,6 @@ void QuoteTree::addQuoteNode(std::string quote)
 	QuoteNode *parent = new QuoteNode;
 	if(tmp == NULL){
 		root = node;
-		quoteCount=1;
 	}
 	else{
 		while(tmp!=NULL)
@@ -71,14 +74,21 @@ void QuoteTree::addQuoteNode(std::string quote)
 void QuoteTree::updateData(std::string first, std::string last) 
 {
 	std::string URL = "https://en.wikiquote.org/wiki/";
-	URL += first + "_" + last;
-
+	URL = URL + first + "_" + last;
+	curlData = "";
 	makeCurlRequest(URL);
-	if (pageFound(curlData)) {
+	if (pageFound(curlData) && curlData != "") {
+		// Person exists, delete previous tree and then create new
+		if (root != NULL) {
+			DeleteAll(root);
+		}
 		parseQuotes(curlData);
 	}
+	else if (curlData == "") {
+		std::cout << "Could not retrieve quote data, please try again later.";
+	}
 	else {
-		std::cout << "This person is not on Wikiquote, please try another" << std::endl;
+		std::cout << "This person is not on Wikiquote, please try another/" << std::endl;
 	}
 }
 void QuoteTree::findQuote(std::string quote)
@@ -114,8 +124,9 @@ void QuoteTree::DeleteAll(QuoteNode* node)
 
 bool QuoteTree::pageFound(std::string document) {
 	// Function to find if is the 404 page
-	std::string text = "<b>Wikiquote does not have an article with this exact name.</b>";
-	if (document.find(text) != -1) {
+	std::string text1 = "<b>Wikiquote does not have an article with this exact name.</b>";
+	std::string text2 = "The requested page title is empty or contains only the name of a namespace.";
+	if (document.find(text1) != -1 || document.find(text2) != -1) {
 		return false;
 	}
 	return true;
