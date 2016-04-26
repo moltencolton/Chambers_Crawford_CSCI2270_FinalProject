@@ -38,6 +38,7 @@ class QuoteTree
         void getRandomQuote();
         int getQuoteCount();
         std::string getAuthor();
+        bool checkAuthor(std::string first, std::string last);
 
     private:
         void DeleteAll(QuoteNode * node); //use this for the post-order traversal deletion of the tree

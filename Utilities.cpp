@@ -37,7 +37,8 @@ void printMenu()
 	std::cout << "4. Count Quotes" << std::endl;
 	std::cout << "5. Get a Random Quote" << std::endl;
 	std::cout << "6. Get Current Author" <<std::endl;
-	std::cout << "7. Quit" << std::endl;
+	std::cout << "7. Check For Author" <<std::endl;
+	std::cout << "8. Quit" << std::endl;
 }
 bool handleUserInput(std::string input, QuoteTree &quoteTree)
 {
@@ -78,6 +79,22 @@ bool handleUserInput(std::string input, QuoteTree &quoteTree)
         std::cout<<"The current author is "+quoteTree.getAuthor()+"."<<std::endl;
 	}
 	else if (input == "7") {
+		// Check for author
+		std::string first;
+		std::string last;
+		std::cout << "Enter the first name:" << std::endl;
+		getline(std::cin, first);
+		std::cout << "Enter the last name:" << std::endl;
+		getline(std::cin, last);
+		bool exists = quoteTree.checkAuthor(first, last);
+		if (exists) {
+			std::cout << "This author is on wikiquote." << std::endl;
+		}
+		else {
+			std::cout << "This author is not on wikiquote." << std::endl;
+		}
+	}
+	else if (input == "8") {
 		// Quit
 		return true;
 	}

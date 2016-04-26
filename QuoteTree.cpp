@@ -250,3 +250,16 @@ void QuoteTree::randomQuote(QuoteNode *node, int randNum)
     if(node->right!=NULL)
         randomQuote(node->right, randNum);
 }
+bool QuoteTree::checkAuthor(std::string first, std::string last) 
+{
+	std::string URL = "https://en.wikiquote.org/wiki/";
+    URL = URL + first + "_" + last;
+    curlData = "";
+    makeCurlRequest(URL);
+    if (pageFound(curlData)) {
+    	return true;
+    }
+    else {
+    	return false;
+    }
+}
