@@ -110,16 +110,18 @@ void QuoteTree::findQuote(std::string quote)
 	QuoteNode *node = root;
 	while(node!=NULL && !found)
 	{
-		if(node->quote.compare(quote)>0)
+		if (node->quote.find(quote) != -1) 
+		{
+            std::cout<<"Quote is real."<<std::endl;
+            found = true;
+            std::cout << "Full quote: " << node->quote << std::endl;
+		}
+		else if(node->quote.compare(quote)>0)
 			node = node -> left;
 		else if(node->quote.compare(quote)<0){
 			node = node -> right;
 		}
-		else
-		{
-            std::cout<<"Quote is real."<<std::endl;
-            found = true;
-		}
+		
 	}
 	if(!found)
 		std::cout << "Quote not found." << std::endl;
