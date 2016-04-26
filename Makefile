@@ -1,4 +1,4 @@
-OBJS = main.o QuoteTree.o
+OBJS = main.o QuoteTree.o Utilities.o
 CPPFLAGS = -std=c++11
 LIBS = -lcurl
 
@@ -13,6 +13,9 @@ main.o: QuoteTree.h QuoteTree.cpp
 
 QuoteTree.o: QuoteTree.h QuoteTree.cpp
 	$(CC) $(CPPFLAGS) -c QuoteTree.cpp
+
+Utilities.o: Utilities.h Utilities.cpp
+	$(CC) $(CPPFLAGS) -c Utilities.cpp
 
 clean:
 	$(RM) $(PROG) $(OBJS)
