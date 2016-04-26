@@ -89,6 +89,7 @@ void QuoteTree::updateData(std::string first, std::string last)
             // Person exists, delete previous tree and then create new
             if (root != NULL) {
                 DeleteAll(root);
+                root = NULL;
             }
             parseQuotes(curlData);
             currentAuthor = first + " " + last;
