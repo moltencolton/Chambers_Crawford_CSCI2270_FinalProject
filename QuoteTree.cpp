@@ -3,6 +3,7 @@
 #include <string>
 #include <cstring>
 #include <sstream>
+#include <cstdlib>
 
 #include "QuoteTree.h"
 #include "Utilities.h"
@@ -19,15 +20,19 @@ QuoteTree::~QuoteTree()
 	if (root != NULL) {
 		DeleteAll(root);
 	}
-	
+
 }
 void QuoteTree::countQuoteNodes()
 {
 	std::cout << "Number of Quotes by Author: " << quoteCount << std::endl;
 }
+int QuoteTree::getQuoteCount()
+{
+    return quoteCount;
+}
 void QuoteTree::addQuoteNode(std::string quote)
 {
-	quoteCount++;
+
 	QuoteNode *tmp = new QuoteNode;
 	tmp = root;
 	QuoteNode *node = new QuoteNode;
@@ -35,6 +40,8 @@ void QuoteTree::addQuoteNode(std::string quote)
 	node -> right = NULL;
 	node -> left = NULL;
 	node -> parent = NULL;
+	node -> num = quoteCount;
+	quoteCount++;
 	QuoteNode *parent = new QuoteNode;
 	if(tmp == NULL){
 		root = node;
@@ -71,25 +78,30 @@ void QuoteTree::addQuoteNode(std::string quote)
 	}
 }
 
-void QuoteTree::updateData(std::string first, std::string last) 
+void QuoteTree::updateData(std::string first, std::string last)
 {
-	std::string URL = "https://en.wikiquote.org/wiki/";
-	URL = URL + first + "_" + last;
-	curlData = "";
-	makeCurlRequest(URL);
-	if (pageFound(curlData) && curlData != "") {
-		// Person exists, delete previous tree and then create new
-		if (root != NULL) {
-			DeleteAll(root);
-		}
-		parseQuotes(curlData);
-	}
-	else if (curlData == "") {
-		std::cout << "Could not retrieve quote data, please try again later.";
-	}
-	else {
-		std::cout << "This person is not on Wikiquote, please try another/" << std::endl;
-	}
+    if(first + " " + last != currentAuthor){
+        std::string URL = "https://en.wikiquote.org/wiki/";
+        URL = URL + first + "_" + last;
+        curlData = "";
+        makeCurlRequest(URL);
+        if (pageFound(curlData) && curlData != "") {
+            // Person exists, delete previous tree and then create new
+            if (root != NULL) {
+                DeleteAll(root);
+            }
+            parseQuotes(curlData);
+            currentAuthor = first + " " + last;
+        }
+        else if (curlData == "") {
+            std::cout << "Could not retrieve quote data, please try again later." << std::endl;
+        }
+        else {
+            std::cout << "This person is not on Wikiquote, please try another." << std::endl;
+        }
+    }
+    else
+        std::cout << currentAuthor +" is already the current author."<<std::endl;
 }
 void QuoteTree::findQuote(std::string quote)
 {
@@ -99,15 +111,13 @@ void QuoteTree::findQuote(std::string quote)
 	{
 		if(node->quote.compare(quote)>0)
 			node = node -> left;
-		else if(node->quote.compare(quote)<0)
+		else if(node->quote.compare(quote)<0){
 			node = node -> right;
+		}
 		else
 		{
-			if(node->quote == quote) 
-			{
-				std::cout<<"Quote is real."<<std::endl;
-				found = true;
-			}
+            std::cout<<"Quote is real."<<std::endl;
+            found = true;
 		}
 	}
 	if(!found)
@@ -201,26 +211,41 @@ std::string QuoteTree::cleanQuote(std::string toClean) {
 	return cleanedQuote;
 }
 
-void QuoteTree::printQuotes() 
+void QuoteTree::printQuotes()
 {
 	printQuote(root);
 }
 
-void QuoteTree::printQuote(QuoteNode *node) 
+void QuoteTree::printQuote(QuoteNode *node)
 {
-	if (node->left != NULL) 
+	if (node->left != NULL)
 	{
 		printQuote(node->left);
 	}
 	std::cout<< "********************************************************************************";
 	std::cout << std::endl << node->quote << std::endl;
-	if (node->right != NULL) 
+	if (node->right != NULL)
 	{
 		printQuote(node->right);
 	}
 }
 
-void QuoteTree::getRandomQuote() 
+std::string QuoteTree::getAuthor()
 {
+    return currentAuthor;
+}
 
+void QuoteTree::getRandomQuote()
+{
+    int randNum = rand() % quoteCount;
+    randomQuote(root, randNum);
+}
+void QuoteTree::randomQuote(QuoteNode *node, int randNum)
+{
+    if(node->left!=NULL)
+        randomQuote(node->left, randNum);
+    if(randNum == node->num)
+        std::cout<<node->quote<<std::endl;
+    if(node->right!=NULL)
+        randomQuote(node->right, randNum);
 }

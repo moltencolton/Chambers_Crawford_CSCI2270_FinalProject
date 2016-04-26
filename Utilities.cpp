@@ -5,7 +5,7 @@
 #include "Utilities.h"
 #include "QuoteTree.h"
 
-void writeCallback(char *buf, size_t size, size_t nmemb, void *up) 
+void writeCallback(char *buf, size_t size, size_t nmemb, void *up)
 {
 	// Data writing function
 	for (int i = 0; i < size*nmemb; i++) {
@@ -13,14 +13,14 @@ void writeCallback(char *buf, size_t size, size_t nmemb, void *up)
 	}
 }
 
-void makeCurlRequest(std::string url) 
+void makeCurlRequest(std::string url)
 {
 	// Function to retrieve data from given URL
-	CURL *curl;	
+	CURL *curl;
 	curl_global_init(CURL_GLOBAL_ALL);
 	curl = curl_easy_init();
 	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writeCallback);	
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writeCallback);
 
 	curl_easy_perform(curl);
 
@@ -28,7 +28,7 @@ void makeCurlRequest(std::string url)
 	curl_global_cleanup();
 }
 
-void printMenu() 
+void printMenu()
 {
 	std::cout << "***** Quote Verifier *****" << std::endl;
 	std::cout << "1. Get Quote Data" << std::endl;
@@ -36,7 +36,8 @@ void printMenu()
 	std::cout << "3. List All Quotes" << std::endl;
 	std::cout << "4. Count Quotes" << std::endl;
 	std::cout << "5. Get a Random Quote" << std::endl;
-	std::cout << "6. Quit" << std::endl;
+	std::cout << "6. Get Current Author" <<std::endl;
+	std::cout << "7. Quit" << std::endl;
 }
 bool handleUserInput(std::string input, QuoteTree &quoteTree)
 {
@@ -59,7 +60,10 @@ bool handleUserInput(std::string input, QuoteTree &quoteTree)
 	}
 	else if (input == "3") {
 		// List all Quotes
-		quoteTree.printQuotes();
+		if(quoteTree.getQuoteCount()!=0)
+            quoteTree.printQuotes();
+		else
+            std::cout<<"Please enter quote data before printing the quotes."<<std::endl;
 	}
 	else if (input == "4") {
 		// Count Quotes
@@ -70,6 +74,10 @@ bool handleUserInput(std::string input, QuoteTree &quoteTree)
 		quoteTree.getRandomQuote();
 	}
 	else if (input == "6") {
+        //Get the current author
+        std::cout<<"The current author is "+quoteTree.getAuthor()+"."<<std::endl;
+	}
+	else if (input == "7") {
 		// Quit
 		return true;
 	}

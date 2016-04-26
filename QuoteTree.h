@@ -8,6 +8,7 @@ struct QuoteNode{
     QuoteNode *parent;
     QuoteNode *left;
     QuoteNode *right;
+    int num;
 
     QuoteNode(){};
 
@@ -17,6 +18,7 @@ struct QuoteNode{
         parent = NULL;
         left = NULL;
         right = NULL;
+        num=0;
     }
 
 };
@@ -34,6 +36,8 @@ class QuoteTree
         void parseQuotes(std::string document);
         void printQuotes();
         void getRandomQuote();
+        int getQuoteCount();
+        std::string getAuthor();
 
     private:
         void DeleteAll(QuoteNode * node); //use this for the post-order traversal deletion of the tree
@@ -43,8 +47,10 @@ class QuoteTree
         void traverseDoc(std::string document);
         std::string cleanQuote(std::string toClean);
         void printQuote(QuoteNode *node);
+        void randomQuote(QuoteNode *node, int randNum);
         QuoteNode *root;
         int quoteCount;
+        std::string currentAuthor;
 };
 
 #endif // QUOTETREE_H
