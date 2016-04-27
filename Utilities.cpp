@@ -50,33 +50,56 @@ bool handleUserInput(std::string input, QuoteTree &quoteTree)
 		getline(std::cin, first);
 		std::cout << "Enter the last name:" << std::endl;
 		getline(std::cin, last);
+		first[0] = toupper(first[0]);
+		last[0] = toupper(last[0]);
 		quoteTree.updateData(first, last);
 	}
 	else if (input == "2") {
 		// Verify a Quote
-		std::string toVerify;
-		std::cout << "Enter a quote to verify:" << std::endl;
-		getline(std::cin, toVerify);
-		quoteTree.findQuote(toVerify);
+		if (quoteTree.getQuoteCount() != 0) {
+			std::string toVerify;
+			std::cout << "Enter a quote to verify:" << std::endl;
+			getline(std::cin, toVerify);
+			quoteTree.findQuote(toVerify);
+		}
+		else {
+			std::cout<<"Please retrieve quote data before verifiying a quote."<<std::endl;
+
+		}
 	}
 	else if (input == "3") {
 		// List all Quotes
 		if(quoteTree.getQuoteCount()!=0)
             quoteTree.printQuotes();
 		else
-            std::cout<<"Please enter quote data before printing the quotes."<<std::endl;
+            std::cout<<"Please retrieve quote data before printing the quotes."<<std::endl;
 	}
 	else if (input == "4") {
 		// Count Quotes
-		quoteTree.countQuoteNodes();
+		if (quoteTree.getQuoteCount() != 0) {
+			quoteTree.countQuoteNodes();
+		}
+		else {
+			std::cout << "Please retrieve quote data before counting the quotes." << std::endl;
+		}
 	}
 	else if (input == "5") {
 		// Get a random quote
-		quoteTree.getRandomQuote();
+		if (quoteTree.getQuoteCount() != 0) {
+			quoteTree.getRandomQuote();
+		}
+		else {
+			std::cout << "Please retrieve quote data before printing a random quote" << std::endl;
+		}
 	}
 	else if (input == "6") {
         //Get the current author
-        std::cout<<"The current author is "+quoteTree.getAuthor()+"."<<std::endl;
+        if (quoteTree.getQuoteCount() != 0) {
+        	std::cout<<"The current author is "+quoteTree.getAuthor()+"."<<std::endl;
+        }
+        else {
+        	std::cout << "No author data is currently stored" << std::endl;
+        }
 	}
 	else if (input == "7") {
 		// Check for author
@@ -86,6 +109,8 @@ bool handleUserInput(std::string input, QuoteTree &quoteTree)
 		getline(std::cin, first);
 		std::cout << "Enter the last name:" << std::endl;
 		getline(std::cin, last);
+		first[0] = toupper(first[0]);
+		last[0] = toupper(last[0]);
 		bool exists = quoteTree.checkAuthor(first, last);
 		if (exists) {
 			std::cout << "This author is on wikiquote." << std::endl;

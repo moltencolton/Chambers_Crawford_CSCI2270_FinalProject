@@ -92,7 +92,14 @@ void QuoteTree::updateData(std::string first, std::string last)
                 root = NULL;
             }
             parseQuotes(curlData);
-            currentAuthor = first + " " + last;
+            if (quoteCount > 0) {
+            	std::cout << "Quote data read in successfully" << std::endl;
+            	currentAuthor = first + " " + last;
+            }
+            else {
+            	std::cout << "Something went wrong while reading in quote data, please try another author." << std::endl;
+            }
+            
         }
         else if (curlData == "") {
             std::cout << "Could not retrieve quote data, please try again later." << std::endl;
@@ -137,7 +144,7 @@ void QuoteTree::DeleteAll(QuoteNode* node)
 
 bool QuoteTree::pageFound(std::string document) {
 	// Function to find if is the 404 page
-	std::string text1 = "<b>Wikiquote does not have an article with this exact name.</b>";
+	std::string text1 = "Wikiquote does not have an article with this exact name";
 	std::string text2 = "The requested page title is empty or contains only the name of a namespace.";
 	if (document.find(text1) != -1 || document.find(text2) != -1) {
 		return false;
